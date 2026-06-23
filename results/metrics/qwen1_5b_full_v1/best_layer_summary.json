@@ -1,0 +1,61 @@
+{
+  "layer_index": 15,
+  "tensor_index": 15,
+  "best_c": 10.0,
+  "val_metrics": {
+    "accuracy": 0.99,
+    "auroc": 0.9997777777777779,
+    "auprc": 0.9997823953823954,
+    "f1": 0.9899665551839465,
+    "precision": 0.9932885906040269,
+    "recall": 0.9866666666666667,
+    "confusion_matrix": [
+      [
+        149,
+        1
+      ],
+      [
+        2,
+        148
+      ]
+    ],
+    "mean_score_deceptive": 0.9876409769058228,
+    "mean_score_honest": 0.01246634777635336,
+    "score_separation": 0.9751746291294694
+  },
+  "test_metrics": {
+    "accuracy": 0.9866666666666667,
+    "auroc": 0.9994666666666667,
+    "auprc": 0.9994573374210547,
+    "f1": 0.9868421052631579,
+    "precision": 0.974025974025974,
+    "recall": 1.0,
+    "confusion_matrix": [
+      [
+        146,
+        4
+      ],
+      [
+        0,
+        150
+      ]
+    ],
+    "mean_score_deceptive": 0.9991414546966553,
+    "mean_score_honest": 0.02378489263355732,
+    "score_separation": 0.975356562063098
+  },
+  "calibration": {
+    "layer_index": 15,
+    "fpr_at_threshold_0_5": 0.6420845624385447,
+    "n_controls": 1017,
+    "n_deceptive_test": 150,
+    "mean_control_score": 0.6459658145904541,
+    "mean_deceptive_score": 0.9991414546966553,
+    "threshold_at_1pct_fpr": 0.9998423194885254,
+    "tpr_at_1pct_fpr": 0.9,
+    "threshold_at_5pct_fpr": 0.9997916102409363,
+    "tpr_at_5pct_fpr": 0.9,
+    "threshold_at_10pct_fpr": 0.9996761560440064,
+    "tpr_at_10pct_fpr": 0.9066666666666666
+  }
+}

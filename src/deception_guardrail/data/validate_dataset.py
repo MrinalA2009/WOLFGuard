@@ -158,7 +158,7 @@ def validate_no_pair_leakage(pairs: list[FactualLiePair]) -> None:
     logger.info("No pair leakage detected")
 
 
-def validate_controls(controls: list[BenignControl], min_count: int = 300) -> None:
+def validate_controls(controls: list[BenignControl], min_count: int = 1000) -> None:
     if len(controls) < min_count:
         raise ValidationError(
             f"Expected at least {min_count} controls, got {len(controls)}"

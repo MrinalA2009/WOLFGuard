@@ -91,22 +91,76 @@ python scripts/03_capture_activations.py \
 Check the logged `input_ids.shape` and the last 60 characters of each formatted
 prompt to verify the chat template is applied correctly.
 
-### 4 — Qwen limit run (requires GPU, downloads 7B weights)
+### 4 — Qwen pilot capture (requires GPU with CUDA/bfloat16 support)
 
-Capture activations for only the first 4 training samples.  This exercises GPU
-loading, bfloat16 casting, and artifact writing before committing to the full run.
+Captures 4 pairs (8 samples) per split under an isolated run namespace to avoid
+touching full-run artifacts.
+
+> **MPS (Apple Silicon) limitation:** Qwen/Qwen2.5-7B-Instruct requires bfloat16,
+> which is not supported on MPS.  Float16 causes NaN overflow in deep layers (visible
+> from layer 19 onward).  The 7B model requires a CUDA GPU with at least 16 GB VRAM.
+> For pipeline validation on Apple Silicon, use `configs/qwen2_5_1b5_mps.yaml`
+> (Qwen2.5-1.5B-Instruct in float32; see pilot results below).
 
 ```bash
+# 4-pair limit pilot (all splits, isolated namespace)
+for split in train validation test; do
+  python scripts/03_capture_activations.py \
+      --model-config configs/qwen2_5_7b.yaml \
+      --experiment-config configs/experiment.yaml \
+      --split $split --limit-pairs 4 --run-name qwen_pilot_4
+done
 python scripts/03_capture_activations.py \
     --model-config configs/qwen2_5_7b.yaml \
     --experiment-config configs/experiment.yaml \
-    --split train --limit 4
+    --controls --limit-controls 4 --run-name qwen_pilot_4
 ```
 
-Verify the output file `artifacts/activations/qwen2_5_7b/train_activations.pt`
-has the expected shape `[4, 28, 3584]`.
+Verify train artifact has shape `[8, 28, 3584]` (4 pairs × 2 labels, 28 layers, 3584 hidden dim).
 
-After all four steps pass, proceed to the full pipeline (Steps 3–7).
+After all four pre-Qwen steps pass, proceed to the pilot pipeline.
+
+### 5 — Qwen 32-pair pilot (requires GPU)
+
+Run the full pipeline over 32 pairs per split under a named namespace:
+
+```bash
+# Capture
+for split in train validation test; do
+  python scripts/03_capture_activations.py \
+      --model-config configs/qwen2_5_7b.yaml \
+      --experiment-config configs/experiment.yaml \
+      --split $split --limit-pairs 32 --run-name qwen_pilot_32
+done
+python scripts/03_capture_activations.py \
+    --model-config configs/qwen2_5_7b.yaml \
+    --experiment-config configs/experiment.yaml \
+    --controls --limit-controls 32 --run-name qwen_pilot_32
+
+# Train + evaluate + plot + summarize
+python scripts/04_train_layerwise_probes.py \
+    --model-config configs/qwen2_5_7b.yaml \
+    --experiment-config configs/experiment.yaml \
+    --run-name qwen_pilot_32
+python scripts/05_evaluate_controls.py \
+    --model-config configs/qwen2_5_7b.yaml \
+    --experiment-config configs/experiment.yaml \
+    --run-name qwen_pilot_32
+python scripts/06_make_plots.py \
+    --model-config configs/qwen2_5_7b.yaml \
+    --experiment-config configs/experiment.yaml \
+    --run-name qwen_pilot_32
+python scripts/07_summarize_run.py \
+    --model-config configs/qwen2_5_7b.yaml \
+    --experiment-config configs/experiment.yaml \
+    --run-name qwen_pilot_32 --run-id qwen_pilot_32
+```
+
+> **Important:** Pilot AUROC is not scientific evidence.
+> N=32 pairs per split gives ~±0.08 confidence intervals on AUROC.
+> The pilot validates pipeline correctness only.
+
+After all steps pass, proceed to the full pipeline (Steps 3–7) without `--limit-pairs` or `--run-name`.
 
 ---
 
@@ -140,7 +194,10 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-**Hardware:** Activation capture requires a GPU with at least 16 GB VRAM for Qwen2.5-7B-Instruct (bfloat16). Probe training and all tests run on CPU.
+**Hardware:**
+- Activation capture (Qwen2.5-7B): CUDA GPU with ≥16 GB VRAM, bfloat16 support required.  Apple MPS does not support bfloat16; float16 causes NaN overflow in Qwen2.5-7B from layer ~19.
+- Pipeline validation (MPS, Apple Silicon): Use `configs/qwen2_5_1b5_mps.yaml` (Qwen2.5-1.5B-Instruct, float32, ~6 GB MPS memory).
+- Probe training, calibration, plots, and all tests: CPU only.
 
 ---
 
@@ -364,3 +421,9 @@ If AUROC is weak or control FPR is high, investigate prompt design, token positi
 ## License and legal reuse
 
 This codebase is written from scratch. It does not contain code from repositories with unclear licensing (Apollo deception-detection, geometry-of-truth, SafeSwitch). Conceptual design draws on publicly available research papers. Model weights are subject to their respective upstream licenses (Qwen: Tongyi Qianwen License; Mistral/LLaMA: their respective model licenses).
+
+---
+
+## Related Work
+
+The closest prior work is Goldowsky-Dill et al. (2025), "Detecting Strategic Deception Using Linear Probes" (arXiv:2502.03407, ApolloResearch). That paper trains linear probes on the residual-stream activations of instruction-tuned LLMs and reports AUROC of 0.96–0.999 for detecting honest versus deceptive behavior across a range of scenarios. The authors caution that high AUROC does not imply robustness: probes can be evaded by adversarial prompt reformulations, and separation may reflect prompt style rather than a deep internal representation of deception intent. WOLFGuard Phase 1 implements an independently designed version of this core experiment — paired factual prompts, logistic regression probes, calibration against benign controls — on open-weight models under an MIT license, with pair-leakage prevention and TPR@fixed-FPR as the primary operational metric.

@@ -1,0 +1,8 @@
+domain,n_train_kept,n_test_domain,held_out_auroc,held_out_f1,held_out_accuracy,note
+common_knowledge,1226,42,0.9841269841269841,0.9545454545454546,0.9523809523809523,ok
+geography,1194,54,1.0,1.0,1.0,ok
+history,1254,28,1.0,1.0,1.0,ok
+literature,1142,30,1.0,1.0,1.0,ok
+math,1176,58,1.0,1.0,1.0,ok
+science,1152,58,1.0,0.9830508474576272,0.9827586206896551,ok
+technology,1256,30,1.0,0.9375,0.9333333333333333,ok

@@ -41,6 +41,19 @@ def load_activations(path: Path) -> dict:
     return artifact
 
 
-def activation_path(artifacts_dir: Path, model_short_name: str, split: str) -> Path:
-    fname = f"{split}_activations.pt" if split != "controls" else "control_activations.pt"
+def activation_path(
+    artifacts_dir: Path,
+    model_short_name: str,
+    split: str,
+    run_name: Optional[str] = None,
+) -> Path:
+    """
+    Return the path to an activation .pt file.
+
+    Without run_name:  artifacts/activations/{model_short_name}/{split}_activations.pt
+    With run_name:     artifacts/activations/{model_short_name}/{run_name}/{split}_activations.pt
+    """
+    fname = "control_activations.pt" if split == "controls" else f"{split}_activations.pt"
+    if run_name:
+        return artifacts_dir / "activations" / model_short_name / run_name / fname
     return artifacts_dir / "activations" / model_short_name / fname

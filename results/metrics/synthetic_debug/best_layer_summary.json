@@ -47,15 +47,15 @@
   "calibration": {
     "layer_index": 3,
     "fpr_at_threshold_0_5": 0.0,
-    "n_controls": 310,
+    "n_controls": 1017,
     "n_deceptive_test": 150,
-    "mean_control_score": 0.05655401200056076,
+    "mean_control_score": 0.05433254688978195,
     "mean_deceptive_score": 0.9407214522361755,
-    "threshold_at_1pct_fpr": 0.34854625195264854,
+    "threshold_at_1pct_fpr": 0.30876324653625536,
     "tpr_at_1pct_fpr": 1.0,
-    "threshold_at_5pct_fpr": 0.18972744271159175,
+    "threshold_at_5pct_fpr": 0.19039186537265773,
     "tpr_at_5pct_fpr": 1.0,
-    "threshold_at_10pct_fpr": 0.13747421205043797,
+    "threshold_at_10pct_fpr": 0.12811714708805083,
     "tpr_at_10pct_fpr": 1.0
   }
 }

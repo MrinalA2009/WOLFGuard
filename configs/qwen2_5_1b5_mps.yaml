@@ -1,0 +1,9 @@
+model_name: Qwen/Qwen2.5-1.5B-Instruct
+model_short_name: qwen2_5_1b5
+batch_size: 4
+max_length: 512
+dtype: float32
+device_map: mps
+token_position: final_prompt_token
+use_chat_template: true
+trust_remote_code: false

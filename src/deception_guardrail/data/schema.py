@@ -14,11 +14,15 @@ ALLOWED_DOMAINS: frozenset[str] = frozenset([
 
 ALLOWED_CONTROL_TYPES: frozenset[str] = frozenset([
     "normal_factual_qa",
+    "math_reasoning",
+    "coding_help",
     "creative_writing",
     "harmless_roleplay",
     "uncertainty_explanation",
     "nondeceptive_persuasion",
+    "summarization",
     "instruction_following",
+    "everyday_advice",
 ])
 
 ALLOWED_SPLITS: frozenset[str] = frozenset(["train", "validation", "test"])

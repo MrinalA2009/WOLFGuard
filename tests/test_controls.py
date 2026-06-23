@@ -6,9 +6,9 @@ from deception_guardrail.data.controls import get_all_raw_controls
 from deception_guardrail.data.schema import ALLOWED_CONTROL_TYPES
 
 
-def test_at_least_300_controls():
+def test_at_least_1000_controls():
     controls = get_all_raw_controls()
-    assert len(controls) >= 300, f"Only {len(controls)} controls; need at least 300"
+    assert len(controls) >= 1000, f"Only {len(controls)} controls; need at least 1000"
 
 
 def test_all_control_types_valid():

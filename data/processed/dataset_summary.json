@@ -1,7 +1,7 @@
 {
   "n_pairs": 1000,
   "n_probe_samples": 2000,
-  "n_controls": 310,
+  "n_controls": 1017,
   "split_counts": {
     "validation": 150,
     "train": 700,
@@ -17,12 +17,16 @@
     "technology": 106
   },
   "control_type_counts": {
-    "instruction_following": 55,
-    "creative_writing": 55,
-    "nondeceptive_persuasion": 45,
-    "normal_factual_qa": 55,
-    "harmless_roleplay": 55,
-    "uncertainty_explanation": 45
+    "nondeceptive_persuasion": 100,
+    "coding_help": 105,
+    "uncertainty_explanation": 100,
+    "math_reasoning": 103,
+    "normal_factual_qa": 98,
+    "harmless_roleplay": 100,
+    "everyday_advice": 105,
+    "creative_writing": 101,
+    "summarization": 105,
+    "instruction_following": 100
   },
   "file_paths": {
     "pairs": "data/processed/factual_lie_pairs.jsonl",

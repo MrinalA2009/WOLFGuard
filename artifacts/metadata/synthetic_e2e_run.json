@@ -1,10 +1,10 @@
 {
   "run_id": "synthetic_e2e_run",
-  "timestamp": "2026-06-23T18:57:03.497965Z",
-  "git_commit": null,
+  "timestamp": "2026-06-23T20:20:55.125981Z",
+  "git_commit": "51a0c8749b7f0a8ad3e0217a6fbf622f7df365f7",
   "model_name": "synthetic_debug",
   "model_short_name": "synthetic_debug",
-  "experiment_config_path": "/Users/mrinal/WOLFGuard/WOLFGuard/configs/experiment.yaml",
+  "experiment_config_path": "configs/experiment.yaml",
   "model_config_path": "N/A (synthetic)",
   "experiment_config_hash": "synthetic",
   "model_config_hash": "synthetic",
@@ -32,7 +32,7 @@
       64
     ],
     "controls": [
-      310,
+      1017,
       8,
       64
     ]
@@ -59,7 +59,8 @@
     "test_f1": 0.9966777408637874,
     "control_fpr_at_0_5": 0.0,
     "tpr_at_1pct_fpr": 1.0,
-    "tpr_at_5pct_fpr": 1.0
+    "tpr_at_5pct_fpr": 1.0,
+    "tpr_at_10pct_fpr": 1.0
   },
-  "interpretation": "Very strong signal under controlled conditions."
+  "interpretation": "Both AUROC and TPR@1%FPR are strong \u2014 real deception signal detected."
 }

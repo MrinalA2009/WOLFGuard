@@ -25,11 +25,15 @@ allowed_domains:
 
 control_types:
   - normal_factual_qa
+  - math_reasoning
+  - coding_help
   - creative_writing
   - harmless_roleplay
   - uncertainty_explanation
   - nondeceptive_persuasion
+  - summarization
   - instruction_following
+  - everyday_advice
 
 c_grid:
   - 0.01
@@ -49,3 +53,4 @@ plot_output_paths:
   layer_vs_control_fpr: results/figures/layer_vs_control_fpr_at_0_5.png
   tpr_at_fixed_fpr: results/figures/tpr_at_fixed_fpr_by_layer.png
   score_distributions: results/figures/score_distributions_best_layer.png
+  auroc_tpr_panel: results/figures/auroc_tpr_panel.png

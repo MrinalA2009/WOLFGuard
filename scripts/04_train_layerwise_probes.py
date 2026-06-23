@@ -1,13 +1,3 @@
-#!/usr/bin/env python3
-"""
-Train layer-wise logistic regression probes on captured activations.
-
-Usage:
-    python scripts/04_train_layerwise_probes.py \
-        --model-config configs/qwen2_5_7b.yaml \
-        --experiment-config configs/experiment.yaml
-"""
-
 import argparse
 import sys
 from pathlib import Path
@@ -15,6 +5,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from deception_guardrail.activations.store import activation_path, load_activations
+from deception_guardrail.activations.validate import validate_activation_artifact
 from deception_guardrail.analysis.summaries import save_best_layer_json, save_layerwise_csv
 from deception_guardrail.config import load_experiment_config, load_model_config
 from deception_guardrail.probes.train import (
@@ -23,17 +14,20 @@ from deception_guardrail.probes.train import (
     train_all_layers,
 )
 from deception_guardrail.utils.logging import get_logger
+from deception_guardrail.utils.paths import resolve_run_paths
 from deception_guardrail.utils.seed import set_seed
 
 logger = get_logger(__name__)
 
-
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Train layer-wise probes")
+    p = argparse.ArgumentParser(description="Train layer-wise probes on captured activations")
     p.add_argument("--model-config", required=True)
     p.add_argument("--experiment-config", required=True)
+    p.add_argument(
+        "--run-name", default=None,
+        help="Run namespace (must match the --run-name used in 03_capture_activations.py)",
+    )
     return p.parse_args()
-
 
 def main() -> None:
     args = parse_args()
@@ -41,11 +35,33 @@ def main() -> None:
     model_cfg = load_model_config(args.model_config)
     set_seed(exp_cfg.seed)
 
-    artifacts_dir = Path(exp_cfg.paths["artifacts_dir"])
+    run_paths = resolve_run_paths(exp_cfg, model_cfg.model_short_name, args.run_name)
+    artifacts_dir = run_paths["artifacts_dir"]
+    msn = model_cfg.model_short_name
+    rn = args.run_name
 
-    train_art = load_activations(activation_path(artifacts_dir, model_cfg.model_short_name, "train"))
-    val_art = load_activations(activation_path(artifacts_dir, model_cfg.model_short_name, "validation"))
-    test_art = load_activations(activation_path(artifacts_dir, model_cfg.model_short_name, "test"))
+    def _load(split: str) -> dict:
+        path = activation_path(artifacts_dir, msn, split, rn)
+        if not path.exists():
+            raise FileNotFoundError(
+                f"Activation file not found: {path}\n"
+                f"Run 03_capture_activations.py --split {split}"
+                + (f" --run-name {rn}" if rn else "")
+                + " first."
+            )
+        art = load_activations(path)
+        validate_activation_artifact(art, context=split)
+        return art
+
+    train_art = _load("train")
+    val_art = _load("validation")
+    test_art = _load("test")
+
+    logger.info(
+        f"Activation shapes — train: {list(train_art['activations'].shape)}, "
+        f"val: {list(val_art['activations'].shape)}, "
+        f"test: {list(test_art['activations'].shape)}"
+    )
 
     results = train_all_layers(
         train_art, val_art, test_art,
@@ -53,7 +69,7 @@ def main() -> None:
         seed=exp_cfg.seed,
     )
 
-    probes_path = artifacts_dir / "probes" / model_cfg.model_short_name / "layerwise_probes.pkl"
+    probes_path = Path(run_paths["probes_pkl"])
     save_probes(results, probes_path)
 
     best = select_best_layer(results)
@@ -63,12 +79,8 @@ def main() -> None:
         f"test_auroc={best.test_metrics['auroc']:.4f}"
     )
 
-    csv_path = Path(exp_cfg.metrics_output_paths["layerwise_csv"])
-    save_layerwise_csv(results, csv_path)
-
-    best_path = Path(exp_cfg.metrics_output_paths["best_layer_json"])
-    save_best_layer_json(best, {}, best_path)
-
+    save_layerwise_csv(results, Path(run_paths["metrics"]["layerwise_csv"]))
+    save_best_layer_json(best, {}, Path(run_paths["metrics"]["best_layer_json"]))
 
 if __name__ == "__main__":
     main()

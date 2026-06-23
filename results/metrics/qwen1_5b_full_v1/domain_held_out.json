@@ -1,0 +1,78 @@
+{
+  "run_name": "qwen1_5b_full_v1",
+  "model_short_name": "qwen2_5_1b5",
+  "best_layer": 15,
+  "full_test_auroc": 0.9994666666666667,
+  "domain_results": [
+    {
+      "domain": "common_knowledge",
+      "n_train_kept": 1226,
+      "n_test_domain": 42,
+      "held_out_auroc": 0.9841269841269841,
+      "held_out_f1": 0.9545454545454546,
+      "held_out_accuracy": 0.9523809523809523,
+      "note": "ok"
+    },
+    {
+      "domain": "geography",
+      "n_train_kept": 1194,
+      "n_test_domain": 54,
+      "held_out_auroc": 1.0,
+      "held_out_f1": 1.0,
+      "held_out_accuracy": 1.0,
+      "note": "ok"
+    },
+    {
+      "domain": "history",
+      "n_train_kept": 1254,
+      "n_test_domain": 28,
+      "held_out_auroc": 1.0,
+      "held_out_f1": 1.0,
+      "held_out_accuracy": 1.0,
+      "note": "ok"
+    },
+    {
+      "domain": "literature",
+      "n_train_kept": 1142,
+      "n_test_domain": 30,
+      "held_out_auroc": 1.0,
+      "held_out_f1": 1.0,
+      "held_out_accuracy": 1.0,
+      "note": "ok"
+    },
+    {
+      "domain": "math",
+      "n_train_kept": 1176,
+      "n_test_domain": 58,
+      "held_out_auroc": 1.0,
+      "held_out_f1": 1.0,
+      "held_out_accuracy": 1.0,
+      "note": "ok"
+    },
+    {
+      "domain": "science",
+      "n_train_kept": 1152,
+      "n_test_domain": 58,
+      "held_out_auroc": 1.0,
+      "held_out_f1": 0.9830508474576272,
+      "held_out_accuracy": 0.9827586206896551,
+      "note": "ok"
+    },
+    {
+      "domain": "technology",
+      "n_train_kept": 1256,
+      "n_test_domain": 30,
+      "held_out_auroc": 1.0,
+      "held_out_f1": 0.9375,
+      "held_out_accuracy": 0.9333333333333333,
+      "note": "ok"
+    }
+  ],
+  "summary": {
+    "n_domains_evaluated": 7,
+    "min_auroc": 0.9841269841269841,
+    "max_auroc": 1.0,
+    "mean_auroc": 0.9977324263038548,
+    "n_below_0_70": 0
+  }
+}

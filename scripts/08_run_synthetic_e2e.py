@@ -164,6 +164,7 @@ def run_synthetic_e2e(exp_cfg_path: str, run_assertions: bool = True) -> dict:
         "layer_vs_control_fpr": str(syn_figures_dir / "layer_vs_control_fpr_at_0_5.png"),
         "tpr_at_fixed_fpr": str(syn_figures_dir / "tpr_at_fixed_fpr_by_layer.png"),
         "score_distributions": str(syn_figures_dir / "score_distributions_best_layer.png"),
+        "auroc_tpr_panel": str(syn_figures_dir / "auroc_tpr_panel.png"),
     }
 
     # ---- Load labels/ids from the real processed dataset -------------------

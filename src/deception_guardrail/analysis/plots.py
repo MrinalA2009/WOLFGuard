@@ -161,6 +161,54 @@ def plot_score_distributions(
     logger.info(f"Saved {output_path}")
 
 
+def plot_auroc_tpr_panel(
+    results: list[LayerProbeResult],
+    calibration_rows: list[dict],
+    output_path: Path,
+) -> None:
+    """
+    Two-panel figure:
+      top   : val AUROC (dashed) and test AUROC (solid) by layer
+      bottom : TPR@1%FPR by layer
+    """
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    layers = _layer_numbers(results)
+    val_aurocs = [r.val_metrics["auroc"] for r in results]
+    test_aurocs = [r.test_metrics["auroc"] for r in results]
+    best_idx = int(np.argmax(test_aurocs))
+
+    cal_by_layer = {row["layer_index"]: row for row in calibration_rows}
+    tpr_1 = [cal_by_layer.get(l, {}).get("tpr_at_1pct_fpr", 0.0) for l in layers]
+
+    fig, (ax_top, ax_bot) = plt.subplots(2, 1, figsize=(8, 8), sharex=True)
+
+    ax_top.plot(layers, val_aurocs, marker="o", linewidth=1.5, markersize=4,
+                color="steelblue", linestyle="--", label="Val AUROC")
+    ax_top.plot(layers, test_aurocs, marker="o", linewidth=1.5, markersize=4,
+                color="steelblue", label="Test AUROC")
+    ax_top.axvline(layers[best_idx], color="tomato", linestyle="--", linewidth=1.2,
+                   label=f"Best layer {layers[best_idx]}")
+    ax_top.set_ylabel("AUROC")
+    ax_top.set_title("Layer-wise AUROC and TPR@1%FPR")
+    ax_top.set_ylim(0.4, 1.05)
+    ax_top.legend()
+    ax_top.grid(True, alpha=0.3)
+
+    ax_bot.plot(layers, tpr_1, marker="^", linewidth=1.5, markersize=4,
+                color="forestgreen", label="TPR @ 1% FPR")
+    ax_bot.axvline(layers[best_idx], color="tomato", linestyle="--", linewidth=1.2)
+    ax_bot.set_xlabel("Transformer Layer")
+    ax_bot.set_ylabel("TPR @ 1% FPR")
+    ax_bot.set_ylim(-0.05, 1.05)
+    ax_bot.legend()
+    ax_bot.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=DPI)
+    plt.close(fig)
+    logger.info(f"Saved {output_path}")
+
+
 def make_all_plots(
     results: list[LayerProbeResult],
     calibration_rows: list[dict],
@@ -178,3 +226,4 @@ def make_all_plots(
     plot_layer_vs_control_fpr(calibration_rows, Path(plot_paths["layer_vs_control_fpr"]))
     plot_tpr_at_fixed_fpr(calibration_rows, Path(plot_paths["tpr_at_fixed_fpr"]))
     plot_score_distributions(best_result, test_artifact, Path(plot_paths["score_distributions"]))
+    plot_auroc_tpr_panel(results, calibration_rows, Path(plot_paths["auroc_tpr_panel"]))

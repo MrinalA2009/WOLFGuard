@@ -1,8 +1,8 @@
 model_name: Qwen/Qwen2.5-7B-Instruct
 model_short_name: qwen2_5_7b
-batch_size: 8
+batch_size: 1
 max_length: 512
-dtype: auto
+dtype: bfloat16
 device_map: auto
 token_position: final_prompt_token
 use_chat_template: true
