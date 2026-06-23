@@ -1,0 +1,14 @@
+# Tiny GPT2 for smoke-testing the HuggingFace activation capture code path.
+# NOT for scientific results — architecture too small and mismatched.
+# Purpose: verify that capture_activations(), artifact schema, probe training,
+# calibration, and plots all run without crashes on real HF hidden states.
+
+model_name: sshleifer/tiny-gpt2
+model_short_name: tiny_gpt2_debug
+batch_size: 4
+max_length: 128
+dtype: float32         # avoid bfloat16 on CPU to prevent dtype confusion
+device_map: cpu        # smoke test must not require GPU
+token_position: final_prompt_token
+use_chat_template: false    # tiny-gpt2 has no chat template
+trust_remote_code: false

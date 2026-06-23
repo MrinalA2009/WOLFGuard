@@ -1,0 +1,32 @@
+{
+  "n_pairs": 1000,
+  "n_probe_samples": 2000,
+  "n_controls": 310,
+  "split_counts": {
+    "validation": 150,
+    "train": 700,
+    "test": 150
+  },
+  "domain_counts": {
+    "common_knowledge": 129,
+    "geography": 150,
+    "history": 96,
+    "literature": 168,
+    "math": 167,
+    "science": 184,
+    "technology": 106
+  },
+  "control_type_counts": {
+    "instruction_following": 55,
+    "creative_writing": 55,
+    "nondeceptive_persuasion": 45,
+    "normal_factual_qa": 55,
+    "harmless_roleplay": 55,
+    "uncertainty_explanation": 45
+  },
+  "file_paths": {
+    "pairs": "data/processed/factual_lie_pairs.jsonl",
+    "samples": "data/processed/probe_samples.jsonl",
+    "controls": "data/processed/benign_controls.jsonl"
+  }
+}

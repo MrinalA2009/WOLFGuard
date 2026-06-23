@@ -1,0 +1,51 @@
+seed: 42
+
+paths:
+  raw_data_dir: data/raw
+  processed_data_dir: data/processed
+  artifacts_dir: artifacts
+  results_dir: results
+  figures_dir: results/figures
+  metrics_dir: results/metrics
+  metadata_dir: artifacts/metadata
+
+split_sizes:
+  train: 700
+  validation: 150
+  test: 150
+
+allowed_domains:
+  - geography
+  - science
+  - history
+  - math
+  - literature
+  - technology
+  - common_knowledge
+
+control_types:
+  - normal_factual_qa
+  - creative_writing
+  - harmless_roleplay
+  - uncertainty_explanation
+  - nondeceptive_persuasion
+  - instruction_following
+
+c_grid:
+  - 0.01
+  - 0.1
+  - 1.0
+  - 10.0
+
+metrics_output_paths:
+  layerwise_csv: results/metrics/layerwise_probe_metrics.csv
+  best_layer_json: results/metrics/best_layer_summary.json
+  control_calibration_csv: results/metrics/control_calibration.csv
+
+plot_output_paths:
+  layer_vs_test_auroc: results/figures/layer_vs_test_auroc.png
+  layer_vs_validation_auroc: results/figures/layer_vs_validation_auroc.png
+  layer_vs_test_auprc: results/figures/layer_vs_test_auprc.png
+  layer_vs_control_fpr: results/figures/layer_vs_control_fpr_at_0_5.png
+  tpr_at_fixed_fpr: results/figures/tpr_at_fixed_fpr_by_layer.png
+  score_distributions: results/figures/score_distributions_best_layer.png
