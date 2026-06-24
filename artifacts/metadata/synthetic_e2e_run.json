@@ -1,10 +1,10 @@
 {
   "run_id": "synthetic_e2e_run",
-  "timestamp": "2026-06-23T20:20:55.125981Z",
-  "git_commit": "51a0c8749b7f0a8ad3e0217a6fbf622f7df365f7",
+  "timestamp": "2026-06-24T05:50:02.321466Z",
+  "git_commit": "170351cc9cb752145530e9f1fcb0a259379ba64d",
   "model_name": "synthetic_debug",
   "model_short_name": "synthetic_debug",
-  "experiment_config_path": "configs/experiment.yaml",
+  "experiment_config_path": "/Users/mrinal/WOLFGuard/WOLFGuard/configs/experiment.yaml",
   "model_config_path": "N/A (synthetic)",
   "experiment_config_hash": "synthetic",
   "model_config_hash": "synthetic",
